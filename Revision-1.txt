@@ -1,0 +1,279 @@
+1. What is hoisting?
+A. JavaScript Hoisting refers to the process whereby the interpreter appears to move the declaration of functions, variables or classes to the top of their scope, prior to execution of the code.
+Hoisting allows functions to be safely used in code before they are declared.
+Variable and class declarations are also hoisted, so they too can be referenced before they are declared.
+
+
+2. What is scoping?
+A. Scope in JavaScript refers to the current context of code, which determines the accessibility of variables to JavaScript. The two types of scope are local and global: Global variables are those declared outside of a block. Local variables are those declared inside of a block.
+
+
+3. How are var, let, const different?
+A. var: 
+	  - hoisted (always declared at top of scope, global if none)
+    - function scope
+let:
+    - hoisted but cannot be used before the initialization 
+    - block scope
+    - not redeclarable
+const: 
+    - hoisted but cannot be used before the initialization 
+    - block scope
+    - not reassignable
+    - not redeclarable
+
+
+4. What are the two main differences in arrow functions?
+A. this value inside a regular function is dynamic and depends on the invocation. But this inside the arrow function is bound lexically and equals to this of the outer function.
+arguments object inside the regular functions contains the list of arguments. The arrow function, on the opposite, doesn't define arguments (but you can easily access the arrow function arguments using a rest parameter ...args).
+If the arrow function has one expression, then the expression is returned implicitly, even without using the return keyword.
+Last but not least, you can define methods using the arrow function syntax inside classes. Fat arrow methods bind this value to the class instance.
+Anyhow the fat arrow method is invoked, this always equals the class instance, which is useful when the methods are used as callbacks.
+
+
+5. Does Call apply bind work for arrow functions?
+A. In case of arrow functions our methods: Call/Apply & Bind doesn’t work as expected.
+"Since arrow functions do not have their own this, the methods call() or apply() can only pass in parameters. thisArg is ignored."
+Arrow functions doesn't have their own this. This is lexically bound and it uses the this of the context in which the arrow function was called. Call/Apply & Bind can be used only to pass parameters.
+
+
+6. What does call apply bind do?
+A. Call invokes the function and allows you to pass in arguments one by one.
+Apply invokes the function and allows you to pass in arguments as an array.
+Bind returns a new function, allowing you to pass in a this array and any number of arguments.
+var person1 = {firstName: 'Jon', lastName: 'Kuperman'};
+function say(greeting) {
+    console.log(greeting + ' ' + this.firstName + ' ' + this.lastName);
+}
+say.call(person1, 'Hello'); // Hello Jon Kuperman
+say.apply(person1, ['Hello']); // Hello Jon Kuperman
+var sayHelloJon = say.bind(person1);
+sayHelloJon(); // Hello Jon Kuperman
+
+
+7. What are closures?
+A. A closure is the combination of a function bundled together (enclosed) with references to its surrounding state (the lexical environment). In other words, a closure gives you access to an outer function's scope from an inner function. In JavaScript, closures are created every time a function is created, at function creation time.
+function makeFunc() {
+  var name = 'Mozilla';
+  function displayName() {
+    alert(name);
+  }
+  return displayName;
+}
+var myFunc = makeFunc();
+myFunc();
+
+
+8. Write a program to debounce a search bar?
+A. 
+function modifiedDebaunce(cb, delay) {
+  let timer;
+  return function () {
+    let context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      cb.apply(context, args);
+    }, delay)
+  }
+}
+
+
+9. Write a program to throttle a search bar?
+A.
+function throttle(fn, delay) {
+  let flag = true;
+  return function () {
+    let context = this, args = arguments;
+    if(flag) {
+      fn.apply(context, args);
+      flag = false;
+      setTimeout(() => {
+        flag = true;
+      }, delay);
+    }
+  }
+}
+
+
+10. Create a custom method for an array called myMap, use prototype chain to achieve this
+const arr = [1,2,3]
+arr.myMap(a=>a*5)
+// [ 5, 10, 15 ]
+it should work in this manner
+A. Array.prototype.myMap = function (cb) {
+  const newArray = [];
+  for( var i = 0; i < this.length; i++ ){
+    newArray.push(cb(this[i], i, this));
+  }
+  return newArray;
+}
+
+
+11. What is event bubbling?
+A. Event bubbling is a way of event propagation in the HTML DOM. It relates to the order in which events are propagated in nested elements.
+In bubbling, when an event happens, the handler of the innermost element runs, then the parents, and then the further ancestor elements. In other words, events bubble up or propagate the DOM tree upwards.
+
+
+12. What is event loop?
+A. The Event Loop has one simple job — to monitor the Call Stack and the Callback Queue. If the Call Stack is empty, it will take the first event from the queue and will push it to the Call Stack, which effectively runs it. Such an iteration is called a tick in the Event Loop. Each event is just a function callback.
+
+
+13. Explain promises to a 5 year old, with simple examples.
+A. The Promise object represents the eventual completion (or failure) of an asynchronous operation and its resulting value.
+
+
+14. Write a function called sleep that will return a promise, if you do not provide a number to the function, then it will return an error and goto the catch block
+sleep(500).then(res=> {
+ console.log('slept for ${res} milli seconds})
+})
+.catch(errr=>{
+  console.log(err)
+})
+A. function sleep(number) {
+     const promise = new Promise((resolve, reject) => {
+       if( typeof number === 'number' ) {
+           setTimeout(() => {    
+               resolve(number)
+           }, number);
+       }
+       else{
+         reject("Please pass the number...")
+       }
+     })
+    return promise;
+  }
+
+
+
+
+
+15. What does async await mean?
+A. An async function is a function declared with the async keyword, and the await keyword is permitted within it. The async and await keywords enable asynchronous, promise-based behavior to be written in a cleaner style, avoiding the need to explicitly configure promise chains.
+It simply allows us to write promises based code as if it was synchronous and it checks that we are not breaking the execution thread.
+async function f() {
+  try {
+    let response = await fetch('/no-user-here');
+    let user = await response.json();
+  } catch(err) {
+    // catches errors both in fetch and response.json
+    alert(err);
+  }
+}
+
+
+16. What does the 'this' keyword mean?
+A. In the global execution context (outside of any function), this refers to the global object whether in strict mode or not.Inside a function, the value of this depends on how the function is called.
+If the code is not in strict mode, and because the value of this is not set by the call, this will default to the global object, which is window in a browser.
+The behavior of this in classes and functions is similar, since classes are functions under the hood. But there are some differences and caveats.
+Within a class constructor, this is a regular object. All non-static methods within the class are added to the prototype of this.
+In arrow functions, this retains the value of the enclosing lexical context's this. In global code, it will be set to the global object.
+When a function is called as a method of an object, its this is set to the object the method is called on.
+When a function is used as a constructor (with the new keyword), its this is bound to the new object being constructed.
+
+
+17. What are classes? what are getters and setters?
+A. Classes are a template for creating objects. They encapsulate data with code to work on that data. The body of a class is the part that is in curly brackets {}. This is where you define class members, such as methods or constructor. The constructor method is a special method for creating and initializing an object created with a class. A constructor can use the super keyword to call the constructor of the super class.
+In JavaScript, getter methods are used to access the properties of an object.
+const student = {
+    firstName: 'Monica',
+    get getName() {
+        return this.firstName;
+    }
+};
+In JavaScript, setter methods are used to change the values of an object.
+const student = {
+    firstName: 'Monica',
+    set changeName(newName) {
+        this.firstName = newName;
+    }
+};
+
+
+18. How do you declare private and static variables in classes?
+A. Private instance fields are declared with # names (pronounced "hash names"), which are identifiers prefixed with # . The # is a part of the name itself. Private fields are accessible on the class constructor from inside the class declaration itself.
+class ClassWithPrivateField {
+  #privateField;
+  constructor() {
+    this.#privateField = 42;
+    delete this.#privateField;   // Syntax error
+    this.#undeclaredField = 444; // Syntax error
+  }
+}
+const instance = new ClassWithPrivateField()
+instance.#privateField === 42;   // Syntax error
+To call the static method we do not need to create an instance or object of the class. Static variable in JavaScript: We used the static keyword to make a variable static just like the constant variable is defined using the const keyword. It is set at the run time and such type of variable works as a global variable.
+class Example {
+   static staticVariable = 'GeeksforGeeks';
+   static staticMethod() {
+     return 'static method has been called.';
+   }
+}
+console.log(Example.staticVariable);
+console.log(Example.staticMethod());
+
+
+19. Create a Calculator class, it should be able to add, reduce multiply and divide. it should have a value getter, and that should return final output. keep the history of changes made as well, and keep that private, and a user should be able to see previous changes made to the value.
+A. class Calculator {
+    #history = [];
+  
+    add(a, b) {
+      this.#history.push(a+b);
+      return a+b;
+    }
+    sub(a, b) {
+      this.#history.push(a-b);
+      return a-b;
+    }
+    div(a, b) {
+      this.#history.push(a/b);
+      return a*b;
+    }
+    mult(a, b) {
+      this.#history.push(a*b);
+      return a/b;
+    }
+    getter() {
+      return this.#history;
+    }
+  }
+const calc = new Calculator();
+calc.add(3, 6);
+calc.mult(3, 55);
+calc.sub(23, 4);
+calc.div(100, 2);
+calc.getter().forEach((ele) => {
+  console.log(ele);
+})
+
+20. What is currying?
+A. Currying is a process in functional programming in which we can transform a function with multiple arguments into a sequence of nesting functions. It returns a new function that expects the next argument inline. The number of arguments a function takes is also called arity.
+function sum(a) {
+    return (b) => {
+        return (c) => {
+            return a + b + c
+        }
+    }
+}
+console.log(sum(1)(2)(3)) // 6
+
+
+21. Write a program to flatten an array ?
+// input: [ 1, [ 2, 3 ], [ 3 ], [ [ [ 5]],  6]  ]
+// output => [ 1, 2, 3, 3, 5, 6 ]
+A. const arr = [ 1, [ 2, 3 ], [ 3 ], [ [ [ 5]],  6]  ];
+let arr1 = arr.flat(3);
+console.log(arr1);
+
+let arr1 = [];
+function flat(arr, arr1) {
+  for( let i = 0; i < arr.length; i++ ){
+    if( typeof arr[i] === 'number' ) {
+      arr1.push(arr[i]);
+    }
+    else{
+      flat(arr[i], arr1);
+    }
+  }
+}
+flat(arr, arr1);
+console.log("Ans : ", arr1);
